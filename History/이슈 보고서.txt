@@ -1,0 +1,67 @@
+
+
+
+
+
+
+0001. 설명
+
+0010. 라이브러리 정리
+	추가)
+
+	수정)
+
+	참고)
+
+1001. 
+	[JH Blog Url]
+		
+	[참고 URL]
+
+	1. 에러 내용
+		org.apache.ibatis.binding.BindingException: Invalid bound statement (not found)
+		CodeService의 insertCode를 못 찾는다는 에러가 발생되었다.
+
+	2. 원인
+		보통 저 에러 내용의 경우 Mapper 설정 파일을 못 읽어들이거나, xml 파일에서 오타가 발생되는 경우가 많다.
+		이번 경우에는 오타는 아니었고 두 가지의 문제가 있었다.
+
+		1) Service 클래스의 implements가 누락되었다.
+		2) MapperScan
+			> @MapperScan("com.spring.boot")로 되어있었다.
+			> @MapperScan("com.spring.boot.dao")로 정확한 dao 클래스가 위치한 패키지를 정확히 입력해야 한다.
+
+	3. 해결
+		기존)
+			
+		수정)
+
+1002. 
+	[JH Blog Url]
+		
+	[참고 URL]
+
+	1. 에러 내용
+
+	2. 원인
+
+	3. 해결
+		기존)
+			
+		수정)
+
+1003. 
+	[JH Blog Url]
+		
+	[참고 URL]
+
+	1. 에러 내용
+
+	2. 원인
+
+	3. 해결
+		기존)
+			
+		수정)
+
+
