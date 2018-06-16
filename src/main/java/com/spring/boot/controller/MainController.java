@@ -22,6 +22,8 @@ public class MainController {
 	public String home(HttpServletRequest request) {
 		log.info("Web Server Root Start");
 		
+		request.setAttribute("page", "fragments/main");
+		
 		return "index";
 	}
 	
