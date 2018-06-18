@@ -43,3 +43,11 @@
 				Client client = context.getBean(Client.class);
 				return esClient.findById(id);
 			}
+
+			> 참고
+				>> 다음과 같이도 해봤는데..EsClient 클래스 내부에서는 Autowired가 안 먹히는 듯 하다.
+				@Autowired
+				private ApplicationContext context;
+
+				Client client = context.getBean(Client.class);
+
