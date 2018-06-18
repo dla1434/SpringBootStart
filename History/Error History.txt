@@ -1,0 +1,21 @@
+
+1. ES 설정
+	ES 기동 시 기본 localhost로 접속되지만, ES 설정에서 IP를 넣어서 기동했다면 해당 IP로 접속되야 정상 접속 된다.
+	ES ClusterName은 기본 elasticsearch이지만 사용자가 변경하면 해당 클러스트 이름으로 접속해야 한다.
+		> ClusterName이 다르다면 접속 실패가 발생된다.
+		> 기존에 설치된 거라서 기억이 나지 않는다면, ES 기동 후 다음처럼 확인이 가능하다.
+		> curl localhost:9200
+		
+
+2. logback
+	logback 설정에서 com.spring.boot의 로그 레벨이 error로 나와서 출력되지 않았다.
+	logback.xml를 클래스 패스에 넣어서 설정하다면 이 부분은 주의해서 해야 된다..
+	정상 수행 되고 있지만 출력이 안 되서 기동이 안 된 것처럼 보이기 때문이다.
+	
+	
+3. 실행 참고
+	com.spring.boot.Application
+		> WEB 구동없이 간단히 기동하기 위해서 생성하였다.
+	com.spring.boot.SpringBootStarterApplication
+		> 실제 WEB 구동 시 처리하기 위한 클래스
+		> 이게 메인이다.

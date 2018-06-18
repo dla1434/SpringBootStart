@@ -41,7 +41,10 @@ public class Application implements CommandLineRunner{
 		Page<Book> books = bookService.findByAuthor("Rambabu", new PageRequest(0, 10));
 		// List<Book> books = bookService.findByTitle("Elasticsearch Basics");
 
-		books.forEach(x -> log.info("book : {}", x));
+		books.forEach(x -> {
+			System.out.println("x => " + x);
+			log.info("x => {}", x);
+		});
 	}
 	
 	 //useful for debug, print elastic search details

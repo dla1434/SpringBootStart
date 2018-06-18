@@ -33,6 +33,10 @@ public class EsConfig {
 		//ES 5.x
 		Settings esSettings = Settings.builder()
 				.put("cluster.name", EsClusterName)
+				.put("client.transport.sniff", false)
+				.put("client.transport.ping_timeout", "30s")
+				.put("network.server", false)
+				.put(org.elasticsearch.client.support.AbstractClient.CLIENT_TYPE_SETTING_S.getKey(), "transport")
 				.build();
 		
 		//ES 2.x
