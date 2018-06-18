@@ -21,8 +21,8 @@ public class MainController {
 	public String home(HttpServletRequest request) {
 		log.info("Web Server Root Start");
 		
-		Book findOne = bookService.findOne("1001");
-		log.info("findOne : {}", findOne);
+		Book book = bookService.findOne("1001");
+		log.info("findOne : {}", book);
 		
 		return "index";
 	}
