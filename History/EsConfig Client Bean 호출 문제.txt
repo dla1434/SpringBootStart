@@ -1,0 +1,39 @@
+
+1. ES 치ㅑ
+	1. 원인
+		> 아래와 같이 @Service 클래스(=BookServiceImpl) 아래에서 new EsClient() 생성했더니, 
+		> 아래 클래스에서 Null PointExcepiton 발생되었다.
+			--@Autowired
+			--private ElasticsearchOperations es;
+			--Client client = es.getClient();
+		public Book findOne(String id) {
+			EsClient esClient = new EsClient();
+			return esClient.findById(id);
+		}
+
+	2. 이유
+		EsConfig.java에서 @Configuration, @Bean을 통해서 생성해준 Es Client 객체를 찾아오지 못해서 발생되는 문제이다.
+
+	3. 해결
+		1) 방법1
+			> EsClient 클래스를 @Component를 사용해서 등록
+			@Component
+			public class EsClient{
+
+			> BookServiceImpl 서비스 클래스에서는 EsClient 클래스를 Autowired로 받아서 처리한다.
+			> 이 경우 정상적으로 @Bean 객체를 불러올 수 있었다.
+			@Autowired
+			private EsClient esClient;
+
+			public Book findOne(String id) {
+				return esClient.findById(id);
+			}
+
+		2) 방법2
+			> AnnotationConfigApplicationContext를 활용해서 해당 Bean 클래스를 수동으로 호출했다.
+			> 처리는 되는데..좀 별로인 방법이다.
+			public Book findOne(String id) {
+				AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(EsConfig.class);
+				Client client = context.getBean(Client.class);
+				return esClient.findById(id);
+			}

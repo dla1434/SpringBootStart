@@ -20,6 +20,7 @@ import com.spring.boot.model.Book;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+//@Repository
 @Component
 public class EsClient{
 	private static final String INDEX_NAME = "boot";
@@ -28,12 +29,10 @@ public class EsClient{
 	public static final Gson  MAPPER =  new GsonBuilder().registerTypeAdapter(LocalDateTime.class, new LocalDateTimeConverter()).create();
 	
 	@Autowired
-	private Client client;
-//	private ElasticsearchOperations es;
+	private ElasticsearchOperations es;
 	
 	public void save(Book boook){
-//		Client client = es.getClient();
-		
+		Client client = es.getClient();
 		String json = MAPPER.toJson(boook);
 		IndexResponse response = client.prepareIndex(INDEX_NAME, TYPE_ITEMS, boook.getId())
 			.setSource(json, XContentType.JSON).execute().actionGet();
@@ -42,8 +41,7 @@ public class EsClient{
 	}
 	
 	public Book findById(String id){
-//		Client client = es.getClient();
-		
+		Client client = es.getClient();
 		GetResponse response = client.prepareGet(INDEX_NAME, TYPE_ITEMS, id)
 				.setFetchSource(true)
 				.get();
@@ -63,8 +61,7 @@ public class EsClient{
 	}
 	
 	public void delete(Book book){
-//		Client client = es.getClient();
-		
+		Client client = es.getClient();
 		DeleteResponse response = client.prepareDelete(INDEX_NAME, TYPE_ITEMS, book.getId())
 				.execute().actionGet();
 		
@@ -74,6 +71,6 @@ public class EsClient{
 			throw new RuntimeException("book is Wrong!! "+ id);
 		}
 		
-		log.debug("delete bookId - {}", id);
+		log.info("delete bookId - {}", id);
 	}
 }

@@ -13,11 +13,11 @@
 		<appender-ref ref="STDOUT" />
 	</logger>
 
-	<logger name="com.spring.boot" level="debug" additivity="false">
+	<logger name="com.spring.boot" level="info" additivity="false">
 		<appender-ref ref="STDOUT" />
 	</logger>
 
-	<root level="debug">
+	<root level="info">
 		<appender-ref ref="STDOUT" />
 	</root>
 </configuration>

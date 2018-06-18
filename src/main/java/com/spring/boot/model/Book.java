@@ -1,11 +1,6 @@
 package com.spring.boot.model;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.elasticsearch.annotations.Document;
-
-@Document(indexName = "springboot", type = "books")
 public class Book {
-	@Id
 	private String id;
 
 	private String title;
