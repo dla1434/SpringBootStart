@@ -12,4 +12,6 @@ public interface BookRepository extends ElasticsearchRepository<Book, String>{
 	Page<Book> findByAuthor(String author, Pageable pageable);
 	
 	List<Book> findByTitle(String title);
+	
+	List<Book> findByDetail(String detail);
 }
