@@ -1,5 +1,5 @@
 
-1. ES 치ㅑ
+1. ES Client Bean 
 	1. 원인
 		> 아래와 같이 @Service 클래스(=BookServiceImpl) 아래에서 new EsClient() 생성했더니, 
 		> 아래 클래스에서 Null PointExcepiton 발생되었다.
@@ -13,6 +13,12 @@
 
 	2. 이유
 		EsConfig.java에서 @Configuration, @Bean을 통해서 생성해준 Es Client 객체를 찾아오지 못해서 발생되는 문제이다.
+			> EsClient 객체에서는 @Autowired가 안 먹힌다.
+			> ApplicationContext 객체도 마찬가지로 못 불러왔다. 
+				-- @Autowired
+				-- private ApplicationContext context;
+				-- Client client = context.getBean(Client.class);
+
 
 	3. 해결
 		1) 방법1
