@@ -15,7 +15,7 @@ import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 
 @Configuration
-@EnableElasticsearchRepositories(basePackages="com.spring.boot.repository")
+//@EnableElasticsearchRepositories(basePackages="com.spring.boot.repository")
 public class EsConfig {
 	@Value("${elasticsearch.host}")
 	private String EsHost;
