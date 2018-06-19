@@ -35,6 +35,20 @@ public class MainController {
 		return "index";
 	}
 	
+	@GetMapping("/login")
+	public String login(HttpServletRequest request, ModelMap modelMap) {
+		log.info("login");
+		
+		return "login";
+	}
+	
+	@GetMapping("/admin")
+	public String admin(HttpServletRequest request, ModelMap modelMap) {
+		log.info("admin");
+		
+		return "admin/admin";
+	}
+	
 	@GetMapping("/new-task")
 	public String newTask(HttpServletRequest request, ModelMap modelMap) {
 		log.info("newTask");
