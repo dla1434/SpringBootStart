@@ -9,10 +9,14 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.access.AccessDeniedHandler;
 
 @Configuration
 @EnableWebSecurity
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
+	@Autowired
+	AccessDeniedHandler accessDeniedHandler;
+	
 	public void configure(WebSecurity web) throws Exception{
 		web.ignoring().antMatchers("/resources/**");
 	}
@@ -26,7 +30,8 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 			.formLogin()
 			.loginPage("/login")
 			.permitAll()
-			.and();
+			.and()
+			.exceptionHandling().accessDeniedHandler(accessDeniedHandler);
 	}
 	
 	@Autowired

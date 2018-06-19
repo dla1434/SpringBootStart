@@ -49,6 +49,13 @@ public class MainController {
 		return "admin/admin";
 	}
 	
+	@GetMapping("/403")
+	public String errorPage(HttpServletRequest request, ModelMap modelMap) {
+		log.info("404 error page");
+		
+		return "error/403";
+	}
+	
 	@GetMapping("/new-task")
 	public String newTask(HttpServletRequest request, ModelMap modelMap) {
 		log.info("newTask");
