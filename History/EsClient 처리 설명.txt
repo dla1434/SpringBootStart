@@ -1,0 +1,22 @@
+
+1. ES Client 처리
+	ElasticsearchOperations, Client 중 선호하는 방식으로 Elasticsearch를 처리하면 된다.
+
+	1. ElasticsearchOperations 사용 처리
+		@Autowired
+		private ElasticsearchOperations es;
+
+		public void save(Book boook){
+			Client client = es.getClient();
+			String json = MAPPER.toJson(boook);
+			IndexResponse response = client.prepareIndex(INDEX_NAME, TYPE_ITEMS, boook.getId())
+			.setSource(json, XContentType.JSON).execute().actionGet();
+
+			log.info("responseId - {}", response.getId());
+		}
+
+	2. Client 사용 처리
+		@Autowired
+		private Client client;
+
+	

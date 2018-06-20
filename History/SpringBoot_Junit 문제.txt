@@ -1,0 +1,32 @@
+
+1. 
+	[원인]
+
+	[해결]
+		Spring Junit의 경우 @SpringBootTest로 실행하게 되면 @SpringBootApplication이 붙은 클래스를 찾아서 동일한 환경에서 실행하게 해주는데
+		난 @SpringBootApplication이 붙은 클래스를 SpringBootStarterApplication, Application 이렇게 두 개를 사용해서 이 중 어떤걸 사용해야 할 지
+		junit에서 판단하지 못해 생긴 에러이다.
+
+		기존) @SpringBootTest
+		변경) @SpringBootTest(classes={Application.class})
+			> 클래스를 지정해서 해당 클래스를 테스트 때 사용하겠다고 지정하면 해결된다.
+
+	[소스]
+		@RunWith(SpringRunner.class)
+		@SpringBootTest(classes={Application.class})
+		public class SpringBootStarterApplicationTests {
+			@Autowired
+			private ArgusService argusService;
+
+			@Test
+			public void queryTest() {
+				//Argus Service
+				SearchParam searchParam = new SearchParam();
+				searchParam.setIndex(Optional.of("gram-prod-2018.06.19"));
+				searchParam.setType(Optional.of("gram_daemon"));
+				searchParam.setMessage(Optional.of("PushVo"));
+				argusService.searchByQueryBuilder(searchParam);
+			}
+		}
+
+	
