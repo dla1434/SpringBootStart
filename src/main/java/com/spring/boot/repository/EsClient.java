@@ -98,8 +98,13 @@ public class EsClient{
 //					.must(QueryBuilders.rangeQuery("timestamp").gte("2018-06-19 09:00:15,413").lte("2018-06-19 15:00:15,413"));
 			
 			//you can get data, if you add .keyword at filed name 
+//			queryBuilder = queryBuilder.must(QueryBuilders.wildcardQuery("message.keyword", String.format("*%s*", searchParam.getMessage().get())))
+//					.must(QueryBuilders.rangeQuery("timestamp.keyword").gte("2018-06-19 09:00:15,413").lte("2018-06-19 15:00:15,413"));
+			
+			//@Timestamp Test
 			queryBuilder = queryBuilder.must(QueryBuilders.wildcardQuery("message.keyword", String.format("*%s*", searchParam.getMessage().get())))
-					.must(QueryBuilders.rangeQuery("timestamp.keyword").gte("2018-06-19 09:00:15,413").lte("2018-06-19 15:00:15,413"));
+					.must(QueryBuilders.rangeQuery("@timestamp").gte("2018-06-19T12:00:16.018Z").lte("2018-06-19T13:00:16.018Z"));
+//					.must(QueryBuilders.rangeQuery("@timestamp").gte("1529300000000").lte("1529379018126"));
 			
 //		log.info("queryBuilder : {}", queryBuilder);
 			

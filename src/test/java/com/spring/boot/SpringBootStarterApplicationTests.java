@@ -15,8 +15,8 @@ import com.spring.boot.service.ArgusService;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes={Application.class})
 //@ActiveProfiles("local")
-@ActiveProfiles("dev")
-//@ActiveProfiles("prod")
+//@ActiveProfiles("dev")
+@ActiveProfiles("prod")
 public class SpringBootStarterApplicationTests {
 	@Autowired
 	private ArgusService argusService;

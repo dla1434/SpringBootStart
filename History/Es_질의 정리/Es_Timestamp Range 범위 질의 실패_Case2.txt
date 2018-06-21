@@ -1,0 +1,46 @@
+
+1. ES Client 처리
+	[에러]
+		message.keyword 조합과 @timestamp으로 질의했을때..
+		각각을 분리해서 질의하면 성공하는데..두 개를 조합해서는 실패가 된다.
+
+	[실패 퀴리]
+		{
+		  "query": {
+		    "bool": {
+		      "must": [
+		        {
+		          "wildcard": {
+		            "message": {
+		              "wildcard": "*PushJob*",
+		              "boost": 1
+		            }
+		          }
+		        },
+		        {
+		          "range": {
+		            "@timestamp": {
+		              "from": "2018-06-19T03:00:18.259Z",
+		              "to": "2018-06-19T04:00:18.259Z",
+		              "include_lower": true,
+		              "include_upper": true,
+		              "boost": 1
+		            }
+		          }
+		        }
+		      ],
+		      "disable_coord": false,
+		      "adjust_pure_negative": true,
+		      "boost": 1
+		    }
+		  }
+		}
+
+	[원인]
+		정학한 원인은 모르겠다.
+		message.keyword 조합과 @timestamp 시 먼가 조합이 어긋 나나?
+
+	[해결]
+		template을 지정하여 message에 대해서 keyword 타입으로만 수행되게 처리했다.
+		# 참고 문서
+			Remote Template 조회 후 생성.txt
