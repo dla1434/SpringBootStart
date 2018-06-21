@@ -87,23 +87,27 @@ public class EsClient{
 	public void searchByQueryBuilder(SearchParam searchParam){
 		log.info("EsClient.searchByQueryBuilder Start");
 		
-		SearchRequestBuilder searchBuilder = client.prepareSearch(searchParam.getIndex().get()).setTypes(searchParam.getType().get());
-		
-		BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
+		try{
+			SearchRequestBuilder searchBuilder = client.prepareSearch(searchParam.getIndex().get()).setTypes(searchParam.getType().get());
+			
+			BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
 //		queryBuilder = queryBuilder.must(QueryBuilders.wildcardQuery("message", String.format("*%s*", searchParam.getMessage().get())))
-		queryBuilder = queryBuilder.must(QueryBuilders.wildcardQuery("message.keyword", String.format("*%s*", searchParam.getMessage().get())))
+			queryBuilder = queryBuilder.must(QueryBuilders.wildcardQuery("message.keyword", String.format("*%s*", searchParam.getMessage().get())))
 					.must(QueryBuilders.rangeQuery("timestamp").gte("2018-06-19 01:00:00,000").lte("2018-06-19 23:00:00,000"));
-		
+			
 //		log.info("queryBuilder : {}", queryBuilder);
-		
-		searchBuilder.setQuery(queryBuilder);
-		
-		SearchResponse response = searchBuilder.execute().actionGet();
-		
-		log.info("searchBuilder : {}, resp size : {}", searchBuilder, response.getHits().getTotalHits());
-		
-		for (SearchHit hit : response.getHits().getHits()) {
-			log.info("loop : {}", hit.getSourceAsString());
+			
+			searchBuilder.setQuery(queryBuilder);
+			
+			SearchResponse response = searchBuilder.execute().actionGet();
+			
+			log.info("searchBuilder : {}, resp size : {}", searchBuilder, response.getHits().getTotalHits());
+			
+			for (SearchHit hit : response.getHits().getHits()) {
+				log.info("loop : {}", hit.getSourceAsString());
+			}
+		} catch(Exception e){
+			log.error("Exception : {}", e);
 		}
 	}
 }
