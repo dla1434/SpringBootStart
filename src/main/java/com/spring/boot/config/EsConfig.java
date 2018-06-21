@@ -51,6 +51,8 @@ public class EsConfig {
 	//                .addTransportAddress(
 	//				  new InetSocketTransportAddress(InetAddress.getByName(EsHost), EsPort));
 			
+			log.info("host : {}, port : {}", EsHost, EsPort);
+			
 			//ES 5.x
 			client = new PreBuiltTransportClient(esSettings);
 			client.addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(EsHost), Integer.parseInt(EsPort)));

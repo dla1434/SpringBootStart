@@ -1,0 +1,64 @@
+
+1. ES Client 처리
+	[에러]
+		es에 timestamp필드에 대해서 range를 지정하여 질의하는데..이 경우 질의가 실패 되었다.
+
+	[원인]
+		es mapper 설정의 차이가 문제였다.
+
+		# 질의 성공 
+			> timestamp 
+				"timestamp": {
+					"type": "keyword",
+					"ignore_above": 1024
+				},
+
+		# 질의 실패
+			> timestamp : text/keyword 타입이 두 가지 있고, 아무 설정이 없다면 keyword가 아닌 text를 먼저 질의 하게 된다.
+			> keyword를 질의하려면 mapper를 keyword로 변경하거나, 질의 시 필드명에 .keyword를 붙여서 질의하면 된다.
+				"timestamp": {
+					"type": "text",
+					"fields": {
+						"keyword": {
+							"type": "keyword",
+							"ignore_above": 256
+							}
+						}
+					},
+
+	[해결]
+		> 질의 시 필드명에 .keyword를 붙여서 질의로 해결
+		> mapper/templete 지정도 생각해봐야겠다.
+		{
+		  "query" : {
+		    "bool" : {
+		      "must" : [
+		        {
+		          "wildcard" : {
+		            "message.keyword" : {
+		              "wildcard" : "*ActiveJobs*",
+		              "boost" : 1.0
+		            }
+		          }
+		        },
+		        {
+		          "range" : {
+		            "timestamp.keyword" : {
+		              "from" : "2018-06-19 09:00:15,413",
+		              "to" : "2018-06-19 15:00:15,413",
+		              "include_lower" : true,
+		              "include_upper" : true,
+		              "boost" : 1.0
+		            }
+		          }
+		        }
+		      ],
+		      "disable_coord" : false,
+		      "adjust_pure_negative" : true,
+		      "boost" : 1.0
+		    }
+		  }
+		}, resp size : 6
+		2018-06-21 10:15:33 INFO  com.spring.boot.repository.EsClient - loop : {"path":"/home/data/gram.engine.service/logs/daemon.log","@version":"1","timestamp":"2018-06-19 10:00:14,649","classpath":"  in.saram.gram.engine.work.OperateJob pub-#162599","loglevel":"INFO","@timestamp":"2018-06-19T01:00:14.905Z","__GROUP_NAME__":"gram-prod","msg":"currentActiveJobs : 3\n waitingJobs : 0\n jobSequence : 0","host":"gram-engine1","type":"gram_daemon","tags":["multiline"],"message":"[2018-06-19 10:00:14,649] [INFO  in.saram.gram.engine.work.OperateJob pub-#162599] currentActiveJobs : 3\n waitingJobs : 0\n jobSequence : 0"}
+		2018-06-21 10:15:33 INFO  com.spring.boot.repository.EsClient - loop : {"message":"[2018-06-19 10:00:16,531] [INFO  in.saram.gram.engine.work.OperateJob pub-#162225] currentActiveJobs : 0\n waitingJobs : 0\n jobSequence : 1","type":"gram_daemon","path":"/home/data/gram.engine.service/logs/daemon.log","@timestamp":"2018-06-19T01:00:17.040Z","__GROUP_NAME__":"gram-prod","classpath":"  in.saram.gram.engine.work.OperateJob pub-#162225","tags":["multiline"],"host":"gram-engine4","msg":"currentActiveJobs : 0\n waitingJobs : 0\n jobSequence : 1","timestamp":"2018-06-19 10:00:16,531","@version":"1","loglevel":"INFO"}
+		

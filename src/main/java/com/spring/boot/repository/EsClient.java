@@ -91,9 +91,15 @@ public class EsClient{
 			SearchRequestBuilder searchBuilder = client.prepareSearch(searchParam.getIndex().get()).setTypes(searchParam.getType().get());
 			
 			BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
-//		queryBuilder = queryBuilder.must(QueryBuilders.wildcardQuery("message", String.format("*%s*", searchParam.getMessage().get())))
+			
+			//Fail to get date because of message, timestamp is text/keyword
+			//if you try to search in prod, you can get data because message, timestamp is only keyword
+//			queryBuilder = queryBuilder.must(QueryBuilders.wildcardQuery("message", String.format("*%s*", searchParam.getMessage().get())))
+//					.must(QueryBuilders.rangeQuery("timestamp").gte("2018-06-19 09:00:15,413").lte("2018-06-19 15:00:15,413"));
+			
+			//you can get data, if you add .keyword at filed name 
 			queryBuilder = queryBuilder.must(QueryBuilders.wildcardQuery("message.keyword", String.format("*%s*", searchParam.getMessage().get())))
-					.must(QueryBuilders.rangeQuery("timestamp").gte("2018-06-19 01:00:00,000").lte("2018-06-19 23:00:00,000"));
+					.must(QueryBuilders.rangeQuery("timestamp.keyword").gte("2018-06-19 09:00:15,413").lte("2018-06-19 15:00:15,413"));
 			
 //		log.info("queryBuilder : {}", queryBuilder);
 			
