@@ -1,6 +1,9 @@
 package com.spring.boot.repository;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.get.GetResponse;
@@ -101,10 +104,17 @@ public class EsClient{
 //			queryBuilder = queryBuilder.must(QueryBuilders.wildcardQuery("message.keyword", String.format("*%s*", searchParam.getMessage().get())))
 //					.must(QueryBuilders.rangeQuery("timestamp.keyword").gte("2018-06-19 09:00:15,413").lte("2018-06-19 15:00:15,413"));
 			
+			//Timestamp Test
+//			queryBuilder = queryBuilder.must(QueryBuilders.wildcardQuery("message", String.format("*%s*", searchParam.getMessage().get())))
+//					.must(QueryBuilders.rangeQuery("timestamp").gte("2018-06-19 12:00:15,413").lte("2018-06-19 13:00:15,413"));
+			
 			//@Timestamp Test
-			queryBuilder = queryBuilder.must(QueryBuilders.wildcardQuery("message.keyword", String.format("*%s*", searchParam.getMessage().get())))
-					.must(QueryBuilders.rangeQuery("@timestamp").gte("2018-06-19T12:00:16.018Z").lte("2018-06-19T13:00:16.018Z"));
-//					.must(QueryBuilders.rangeQuery("@timestamp").gte("1529300000000").lte("1529379018126"));
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+			queryBuilder = queryBuilder.must(QueryBuilders.wildcardQuery("message", String.format("*%s*", searchParam.getMessage().get())))
+					.must(QueryBuilders.rangeQuery("@timestamp")
+							.gte(LocalDateTime.now(Clock.systemUTC()).minusHours(1).format(formatter))
+							.lte(LocalDateTime.now(Clock.systemUTC()).format(formatter))
+			);
 			
 //		log.info("queryBuilder : {}", queryBuilder);
 			
