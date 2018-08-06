@@ -11,6 +11,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.spring.boot.model.SearchParam;
+import com.spring.boot.repository.EsClient;
 import com.spring.boot.service.ArgusService;
 
 @RunWith(SpringRunner.class)
@@ -22,15 +23,20 @@ public class SpringBootStarterApplicationTests {
 	@Autowired
 	private ArgusService argusService;
 	
+	@Autowired
+	private EsClient esClient;
+	
 	@Test
 //	@Ignore("this method isn’t working yet")
 	public void gramQueryTest() {
 		//Argus Service
 		SearchParam searchParam = new SearchParam();
-		searchParam.setIndex(Optional.of("gram-prod-2018.06.22"));
+		searchParam.setIndex(Optional.of("gram-prod-2018.07.02"));
 		searchParam.setType(Optional.of("gram_daemon"));
+		searchParam.setMinute(Optional.of(5));
 		searchParam.setMessage(Optional.of("ActiveJobs"));
-		argusService.searchByQueryBuilder(searchParam);
+		
+		esClient.findByQueryString_Type1(searchParam);
 	}
 	
 	@Test

@@ -14,6 +14,8 @@ import org.elasticsearch.client.Client;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.QueryStringQueryBuilder;
+import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
@@ -35,6 +37,8 @@ import lombok.extern.slf4j.Slf4j;
 public class EsClient{
 	private static final String INDEX_NAME = "boot";
 	private static final String TYPE_ITEMS = "book";
+	
+	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 	
 	public static final Gson  MAPPER =  new GsonBuilder().registerTypeAdapter(LocalDateTime.class, new LocalDateTimeConverter()).create();
 	
@@ -130,5 +134,94 @@ public class EsClient{
 		} catch(Exception e){
 			log.error("Exception : {}", e);
 		}
+	}
+	
+	/** Query String Default	 */
+	public SearchResponse findByQueryString_Type1(SearchParam searchParam){
+		log.info("findByQueryString.searchBuilder START");
+		
+		SearchResponse response = null;
+		
+		try{
+			SearchRequestBuilder searchBuilder = client.prepareSearch(searchParam.getIndex().get()).setTypes(searchParam.getType().get());
+			QueryStringQueryBuilder queryStringQuery = QueryBuilders.queryStringQuery("message:*ActiveJobs*");
+			searchBuilder.setQuery(queryStringQuery);
+			log.info("findByQueryString_Type1 : {}", queryStringQuery);
+			
+			response = searchBuilder.execute().actionGet();
+			for (SearchHit hit : response.getHits().getHits()) {
+				log.info("loop : {}", hit.getSourceAsString());
+			}
+		}catch(Exception e){
+			log.error("Error : {}", e);
+		}
+			
+		return response;
+	}
+	
+	/** 
+	 * Query String + Range
+	 * BoolQuery + must(QueryString) + must(RangeQuery)
+	 */
+	public SearchResponse findByQueryString_Type2(SearchParam searchParam){
+		log.info("findByQueryString.searchBuilder START");
+		
+		SearchResponse response = null;
+		
+		try{
+			SearchRequestBuilder searchBuilder = client.prepareSearch(searchParam.getIndex().get()).setTypes(searchParam.getType().get());
+			
+			BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
+			boolQuery = boolQuery.must(QueryBuilders.queryStringQuery("message:*ActiveJobs*"))
+				.must(QueryBuilders.rangeQuery("@timestamp")
+						.gte(LocalDateTime.now(Clock.systemUTC()).minusMinutes(searchParam.getMinute().get()).format(formatter))
+						.lte(LocalDateTime.now(Clock.systemUTC()).format(formatter)));
+			
+			searchBuilder.setQuery(boolQuery);
+			log.info("findByQueryString_Type2.searchBuilder : {}", searchBuilder);
+			
+			response = searchBuilder.execute().actionGet();
+			for (SearchHit hit : response.getHits().getHits()) {
+				log.info("loop : {}", hit.getSourceAsString());
+			}
+		}catch(Exception e){
+			log.error("Error : {}", e);
+		}
+			
+		return response;
+	}
+	
+	/** 
+	 * Query String + Range
+	 * BoolQuery + filter(QueryString) + filter(RangeQuery)
+	 */
+	public SearchResponse findByQueryString_Type3(SearchParam searchParam){
+		log.info("findByQueryString.searchBuilder START");
+		
+		SearchResponse response = null;
+		
+		try{
+			SearchRequestBuilder searchBuilder = client.prepareSearch(searchParam.getIndex().get()).setTypes(searchParam.getType().get());
+			
+			BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
+			QueryStringQueryBuilder queryStringQuery = QueryBuilders.queryStringQuery("message:*ActiveJobs*");
+			RangeQueryBuilder rangeQueryBuilder = QueryBuilders.rangeQuery("@timestamp")
+				.gte(LocalDateTime.now(Clock.systemUTC()).minusMinutes(searchParam.getMinute().get()).format(formatter))
+				.lte(LocalDateTime.now(Clock.systemUTC()).format(formatter));
+			
+			boolQuery.filter(queryStringQuery).filter(rangeQueryBuilder);
+			
+			searchBuilder.setQuery(boolQuery);
+			log.info("findByQueryString_Type3.searchBuilder : {}", searchBuilder);
+			
+			response = searchBuilder.execute().actionGet();
+			for (SearchHit hit : response.getHits().getHits()) {
+				log.info("loop : {}", hit.getSourceAsString());
+			}
+		}catch(Exception e){
+			log.error("Error : {}", e);
+		}
+			
+		return response;
 	}
 }
